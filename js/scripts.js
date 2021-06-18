@@ -1,18 +1,17 @@
 "use strict";
 
 const numOfEmployees = 12;
-const url =`https://randomuser.me/api/?results=${numOfEmployees}`;
+const url =`https://randomuser.me/api/?results=${numOfEmployees}&nat=us`;
 let gallery = document.getElementById("gallery");
-let close;
 
 const getEmployeeData = async (url) => {
     const employees = await fetch(url);
     return employees;
 }
 
+/** Populate gallery with employee data **/
 const populateEmployees = (employeeData) => {
     for (let i=0; i<employeeData.length; i++){
-
         let employeeInfo = employeeData[i];
         let image = employeeInfo.picture.large;
         let firstName = employeeInfo.name.first;
@@ -20,6 +19,8 @@ const populateEmployees = (employeeData) => {
         let email = employeeInfo.email;
         let city = employeeInfo.location.city;
         let state = employeeInfo.location.state;
+
+        // Markup template
         let html = `
                 <div class="card ${i}">
                     <div class="card-img-container">
@@ -37,9 +38,12 @@ const populateEmployees = (employeeData) => {
     }
 }
 
+/** Listen for clicks on gallery card.
+    Display and populate modal with data from appropriate employee **/
 const createModals = (employeeData) => {
     const body = document.body;
     const cards = document.getElementsByClassName("card");
+    // Loop over all cards and add event listener for each
     for (let i=0; i<cards.length; i++) {
         let employeeInfo = employeeData[i];
         let image = employeeInfo.picture.large;
@@ -55,9 +59,8 @@ const createModals = (employeeData) => {
         let city = employeeInfo.location.city;
         let state = employeeInfo.location.state;
         let zip = employeeInfo.location.postcode;
-
-        cards[i].addEventListener("click", (e) => {
-            let html = `
+        // Modal markup template
+        let html = `
                 <div class="modal-container">
                     <div class="modal">
                         <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
@@ -72,8 +75,6 @@ const createModals = (employeeData) => {
                             <p class="modal-text">Birthday: ${bdayMonth}/${bdayDay}/${bdayYear}</p>
                         </div>
                     </div>
-    
-                    // IMPORTANT: Below is only for exceeds tasks 
                     <div class="modal-btn-container">
                         <button type="button" id="modal-prev" class="modal-prev btn">Prev</button>
                         <button type="button" id="modal-next" class="modal-next btn">Next</button>
@@ -81,13 +82,22 @@ const createModals = (employeeData) => {
                 </div>
             `;
 
+        cards[i].addEventListener("click", (e) => {
+
             body.insertAdjacentHTML("beforeend", html);
 
-            /** EVENT LISTENERS FOR MODALS **/
+            /** EVENT LISTENERS FOR MODAL CONTENT **/
             const modal = document.getElementsByClassName("modal-container")[0];
             const close = document.getElementById("modal-close-btn");
+            const prev = document.getElementById("modal-prev");
+            const next = document.getElementById("modal-next");
+
             close.addEventListener("click", () => {
+
                 modal.parentNode.removeChild(modal);
+            });
+
+            prev.addEventListener("click", () => {
             });
 
         });
