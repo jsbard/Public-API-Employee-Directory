@@ -54,7 +54,7 @@ const createModals = (employeeData) => {
             let bdayMonth = employeeInfo.dob.date.substr(5, 2);
             let bdayDay = employeeInfo.dob.date.substr(8, 2);
             let bdayYear = employeeInfo.dob.date.substr(0, 4);
-            let phone = employeeInfo.phone;
+            let phone = employeeInfo.phone.replace("-", " ");
             let email = employeeInfo.email;
             let streetNum = employeeInfo.location.street.number;
             let street = employeeInfo.location.street.name;
