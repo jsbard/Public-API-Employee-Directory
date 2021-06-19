@@ -89,7 +89,7 @@ const createModals = (employeeData) => {
         }
 
         // Display corresponding employee when their card is clicked
-        cards[i].addEventListener("click", (e) => {
+        cards[i].addEventListener("click", () => {
             let employeeInfo = employeeData[i];
             // Marker to keep track of current modal
             // utilized in addPrevButtonListener() and addNextButtonListener()
@@ -164,9 +164,56 @@ const createModals = (employeeData) => {
     }
 }
 
+/** addSearch() appends a search box and adds the ability to filter the cards
+ *  based on search results  **/
+
+const addSearch = (employeeData) => {
+    const appendSearchField = () => {
+        const searchField = document.getElementsByClassName("search-container")[0];
+        const searchHTML = `<form action="#" method="get">
+                            <input type="search" id="search-input" class="search-input" placeholder="Search...">
+                            <input type="submit" value="&#x1F50D;" id="search-submit" class="search-submit">
+                        </form>`;
+        searchField.insertAdjacentHTML("beforeend", searchHTML);
+    }
+
+    const filterResults = (employeeData, searchValue) => {
+        let filteredEmployees = [];
+        const gallery = document.getElementById("gallery");
+        employeeData.forEach(employee => {
+            let fullName = (employee.name.first + employee.name.last).toLowerCase();
+            if (fullName.includes(searchValue) && searchValue !== ""){
+                filteredEmployees.push(employee);
+            }
+            // Display all employees if search field is blank
+            if (searchValue === ""){
+                filteredEmployees = employeeData;
+            }
+        });
+        // Clear the gallery
+        while (gallery.firstChild){
+            gallery.removeChild(gallery.firstChild);
+        }
+        // Populate with filtered results
+        populateEmployees(filteredEmployees);
+        createModals(filteredEmployees);
+    }
+
+    appendSearchField();
+
+    const search = document.getElementsByTagName("form")[0];
+    search.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const input = document.getElementById("search-input");
+        const searchValue = input.value.toLowerCase();
+        filterResults(employeeData, searchValue);
+    });
+}
+
 getEmployeeData(url)
     .then(res => res.json())
     .then(data => {
         populateEmployees(data.results);
         createModals(data.results);
+        addSearch(data.results);
     });
